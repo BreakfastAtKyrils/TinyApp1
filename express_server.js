@@ -13,6 +13,19 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+const users = { 
+  "userRandomID": {
+    id: "userRandomID", 
+    email: "user@example.com", 
+    password: "purple-monkey-dinosaur"
+  },
+ "user2RandomID": {
+    id: "user2RandomID", 
+    email: "user2@example.com", 
+    password: "dishwasher-funk"
+  }
+}
+
 function generateRandomString() {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
   let result = '';
@@ -24,29 +37,43 @@ function generateRandomString() {
 
 //this get method simply renders all the URLs
 app.get("/urls", (req, res) => {
+
+
   const templateVars = { 
     urls: urlDatabase,
-    username: req.cookies["username"],
- };
+    user: users[req.cookies["user_id"]],
+  };
+
+  console.log('GET /urls')
+  //console.log(templateVars)
   res.render("urls_index", templateVars)
+})
+
+//registration page
+app.get("/register", (req, res) => {
+  //console.log(req.cookies["user_id"].email)
+  const templateVars = { 
+    user: users[req.cookies["user_id"]],
+  };
+  res.render("register", templateVars);
 })
 
 //create a new URL
 app.get("/urls/new", (req, res) => {
   const templateVars = { 
-    username: req.cookies["username"],
- };
+    user: users[req.cookies["user_id"]],
+  };
   res.render("urls_new", templateVars);
 });
 
 //displays a specific URL page --> use urls_show.ejs
 app.get("/urls/:shortURL", (req, res) => {
-  console.log('GET /urls/:shortURL !')
+  //console.log('GET /urls/:shortURL !')
 
   const templateVars = { 
     shortURL: req.params.shortURL, 
     longURL: urlDatabase[req.params.shortURL],
-    username: req.cookies["username"],
+    user: users[req.cookies["user_id"]],
   };
 
   res.render("urls_show", templateVars);
@@ -64,13 +91,13 @@ app.get("/u/:shortURL", (req, res) => {
 
 //adds new URL
 app.post("/urls", (req, res) => {
-  console.log(req.body);  // Log the POST request body to the console
+  //console.log(req.body);  // Log the POST request body to the console
   const shortURL = generateRandomString();
   const longURL = req.body.longURL;
   urlDatabase[shortURL] = longURL;
 
-  console.log('here is the database after the action was performed:    ')
-  console.log(urlDatabase);
+  //console.log('here is the database after the action was performed:    ')
+  //console.log(urlDatabase);
 
   res.redirect(`/urls/${shortURL}`)
 });
@@ -78,7 +105,7 @@ app.post("/urls", (req, res) => {
 //updates a URL
 app.post("/urls/:id", (req, res) => { 
   urlDatabase[req.body.short] = req.body.longURL;
-  //res.redirect(`/urls/${shortURL}`)
+  res.redirect(`/urls`)
 })
 
 //deletes URL
@@ -101,10 +128,31 @@ app.post("/login", (req, res) => {
 })
 
 app.post("/logout", (req, res) => {
-  res.clearCookie('username')
+  res.clearCookie('user_id')
+  res.redirect("/urls")
+})
+
+app.post("/register", (req, res) => {
+  console.log('POST /register')
+
+  //generating user id
+  const id = generateRandomString();
+
+  //adding to users object --> tested and works 
+  users[id] = {
+    id: id,
+    email: req.body.email,
+    password: req.body.password,
+  }
+
+  //add id to cookie 
+  res.cookie('user_id', id)
+
+
+  //console.log(req.cookies.user_id)
   res.redirect("/urls")
 })
 
 app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}!`);
+  console.log(`Pavle Gregory Kyril are all listening on port ${PORT}!`);
 });
