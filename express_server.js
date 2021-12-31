@@ -22,7 +22,7 @@ const users = {
  "user2RandomID": {
     id: "user2RandomID", 
     email: "greg@gmail.com", 
-    password: "dishwasher-funk"
+    password: "11"
   }
 }
 
@@ -40,11 +40,28 @@ function checkEmail(email) {
   for (const user in users){
     emails.push(users[user].email);
   }
-  if (!emails.includes(email)){
-    return false;
+  if (emails.includes(email)){
+    return true;
   }
-  return true;
+  return false;
 }
+
+function getPasswordByEmail(email) {
+  for (const user in users) {
+    if (email === users[user].email){
+      return users[user].password
+    }
+  }
+}
+
+function getIdByEmail(email) {
+  for (const user in users) {
+    if (email === users[user].email){
+      return users[user].id
+    }
+  }
+}
+
 
 //this get method simply renders all the URLs
 app.get("/urls", (req, res) => {
@@ -138,9 +155,23 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 })
 
 app.post("/login", (req, res) => {
-  console.log(req.body.username)
-  res.cookie('username', req.body.username)
-  console.log(res.cookie)
+  console.log('POST /login')
+
+  if (!checkEmail(req.body.email)){
+    res.status(403);
+    res.send('403: Email not found'); 
+  }
+
+  if (req.body.password !== getPasswordByEmail(req.body.email)) {
+    res.status(403);
+    res.send('403: Incorrect Password'); 
+  }
+
+  const id =  getIdByEmail(req.body.email)
+  //console.log(id);
+
+  res.cookie('user_id', id)
+  //console.log(res.cookie)
 
   res.redirect("/urls")
 })
@@ -159,15 +190,15 @@ app.post("/register", (req, res) => {
     res.send('400: Email or Password cannot be empty !!!');  
   }
   //check if email is already registered
-
   if (checkEmail(req.body.email)){
     res.status(400);
     res.send('Email already in use!');
   }
+
   //generating user id
   const id = generateRandomString();
 
-  //adding to users object --> tested and works 
+  //adding to users object 
   users[id] = {
     id: id,
     email: req.body.email,
