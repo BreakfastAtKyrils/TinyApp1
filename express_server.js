@@ -21,7 +21,7 @@ const users = {
   },
  "user2RandomID": {
     id: "user2RandomID", 
-    email: "user2@example.com", 
+    email: "greg@gmail.com", 
     password: "dishwasher-funk"
   }
 }
@@ -33,6 +33,17 @@ function generateRandomString() {
     result += chars.charAt(Math.floor(Math.random() * chars.length));
   }
   return result;
+}
+
+function checkEmail(email) {
+  let emails = [];
+  for (const user in users){
+    emails.push(users[user].email);
+  }
+  if (!emails.includes(email)){
+    return false;
+  }
+  return true;
 }
 
 //this get method simply renders all the URLs
@@ -135,6 +146,17 @@ app.post("/logout", (req, res) => {
 app.post("/register", (req, res) => {
   console.log('POST /register')
 
+  //check if either email/password are empty strings
+  if(!req.body.email || !req.body.password){
+    res.status(400);
+    res.send('400: Email or Password cannot be empty !!!');  
+  }
+  //check if email is already registered
+
+  if (checkEmail(req.body.email)){
+    res.status(400);
+    res.send('Email already in use!');
+  }
   //generating user id
   const id = generateRandomString();
 
