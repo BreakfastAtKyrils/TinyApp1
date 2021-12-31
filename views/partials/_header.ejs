@@ -20,9 +20,13 @@
       
     <% } else{ %>  
       <h1>
-        <form class="form-inline" action="/login" method="POST">
-          <input class="form-control" type="text" name="username">
+        <form class="form-inline" action="/login" method="GET">
           <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+      </h1>
+      <h1>
+        <form class="form-inline" action="/register" method="GET">
+          <button type="submit" class="btn btn-primary">Register</button>
         </form>
       </h1>
     <% } %>

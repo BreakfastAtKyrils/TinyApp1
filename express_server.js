@@ -113,6 +113,13 @@ app.post("/urls", (req, res) => {
   res.redirect(`/urls/${shortURL}`)
 });
 
+app.get("/login", (req, res) => {
+  const templateVars = { 
+    user: users[req.cookies["user_id"]],
+  };
+  res.render("login", templateVars);
+})
+
 //updates a URL
 app.post("/urls/:id", (req, res) => { 
   urlDatabase[req.body.short] = req.body.longURL;
