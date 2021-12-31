@@ -32,6 +32,12 @@
               <button type="submit" class="btn btn-primary">Delete</button>
             </form>
           </td>
+          <td> 
+            <% const edit = `/urls/${url}` %>
+            <form method="GET" action= <%= edit %> >
+            <button type="submit" class="btn btn-primary">Edit</button>
+          </form>
+        </td>
           </tr>
         <% } %>
       </tbody>
