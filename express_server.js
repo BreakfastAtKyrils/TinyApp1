@@ -11,23 +11,20 @@ app.set("view engine", "ejs");
 
 const urlDatabase = {
   "b2xVn2": { longURL: "http://www.lighthouselabs.ca", userID: "greg_user_id" },
-  "9sm5xK": { longURL: "http://www.google.com", userID: "user2RandomID" },
-  "short1": { longURL: "http://www.google.com", userID: "user3RandomID" },
-  "short2": { longURL: "http://www.google.com", userID: "user3RandomID" },
+  "9sm5xK": { longURL: "http://www.google.com", userID: "greg_user_id" },
+  "short1": { longURL: "http://www.google.com", userID: "greg_user_id" },
+  "short2": { longURL: "http://www.google.com", userID: "greg_user_id" },
 };
 
-console.log(urlDatabase["short2"].longURL)
+//hashed passwords for initial user for testing
+const greg_password = '11';
+const greg_hash = bcrypt.hashSync(greg_password, 10);
 
 const users = { 
-  "userRandomID": {
-    id: "userRandomID", 
-    email: "user@example.com", 
-    password: "purple-monkey-dinosaur"
-  },
  "greg_user_id": {
     id: "greg_user_id", 
     email: "greg@gmail.com", 
-    password: "11"
+    password: greg_hash,
   }
 }
 
