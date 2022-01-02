@@ -11,23 +11,20 @@ app.set("view engine", "ejs");
 
 const urlDatabase = {
   "b2xVn2": { longURL: "http://www.lighthouselabs.ca", userID: "greg_user_id" },
-  "9sm5xK": { longURL: "http://www.google.com", userID: "user2RandomID" },
-  "short1": { longURL: "http://www.google.com", userID: "user3RandomID" },
-  "short2": { longURL: "http://www.google.com", userID: "user3RandomID" },
+  "9sm5xK": { longURL: "http://www.google.com", userID: "greg_user_id" },
+  "short1": { longURL: "http://www.google.com", userID: "greg_user_id" },
+  "short2": { longURL: "http://www.google.com", userID: "greg_user_id" },
 };
 
-console.log(urlDatabase["short2"].longURL)
+//hashed passwords for initial user for testing
+const greg_password = '11';
+const greg_hash = bcrypt.hashSync(greg_password, 10);
 
 const users = { 
-  "userRandomID": {
-    id: "userRandomID", 
-    email: "user@example.com", 
-    password: "purple-monkey-dinosaur"
-  },
  "greg_user_id": {
     id: "greg_user_id", 
     email: "greg@gmail.com", 
-    password: "11"
+    password: greg_hash,
   }
 }
 
@@ -249,6 +246,7 @@ app.post("/login", (req, res) => {
     res.send('403: Email not found'); 
   } 
   //check password
+  //const hashedPassword = bcrypt.hashSync(req.body.password, 10);
   if (!bcrypt.compareSync(req.body.password, getPasswordByEmail(req.body.email))) {
     res.status(403);
     res.send('403: Incorrect Password'); 
@@ -285,17 +283,15 @@ app.post("/register", (req, res) => {
   //generating user id
   const id = generateRandomString();
 
-  //hashing password:
-  const password = req.body.password;
-  const hashedPassword = bcrypt.hashSync(password, 10);
-
+  //hashing password
+  const hashedPassword = bcrypt.hashSync(req.body.password, 10);
+  console.log(hashedPassword)
   //adding to users object 
   users[id] = {
     id: id,
     email: req.body.email,
     password: hashedPassword,
   }
-
   //add id to cookie 
   res.cookie('user_id', id)
 
