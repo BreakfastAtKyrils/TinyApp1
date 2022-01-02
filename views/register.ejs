@@ -12,52 +12,16 @@
 <!-- Body  -->
 
 <body>
-  
-  <main style="margin: 1em;">
-    <% if(!user){ %>
-      <h3>
-        Please Login or Register 
-      </h3>
-    <% } else{ %> 
-    <h3>My URLs</h3>
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">Short URL</th>
-          <th scope="col">Long URL</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% for(let url in urls) { %>
-          <tr>
-            <td><%= url %></td>
-            <td><%= urls[url] %></td>
-            <td> 
-              <% const action = `/urls/${url}/delete` %>
-              <form method="POST" action= <%= action %> >
-                <button type="submit" class="btn btn-primary">Delete</button>
-                <input type="hidden" name="short" value= <%= url %> >
-              </form>
-          </td>
-          <td> 
-            <% const edit = `/urls/${url}` %>
-            <form method="GET" action= <%= edit %> >
-            <button type="submit" class="btn btn-primary">Edit</button>
-          </form>
-        </td>
-          </tr>
-        <% } %>
-      </tbody>
-    </table>
-    <% } %>
-  </main>
+  <form class="form-inline" action="/register" method="POST">
+    <div class="form-group mb-2">
+      <input type="email" name="email">Enter your email</input>
+      <input type="password" name="password">Enter your password</input>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+  </form>
 
 
 
-
-   
-
- 
 
 
   <!-- Bootstrap JS -->
