@@ -249,6 +249,7 @@ app.post("/login", (req, res) => {
     res.send('403: Email not found'); 
   } 
   //check password
+  //const hashedPassword = bcrypt.hashSync(req.body.password, 10);
   if (!bcrypt.compareSync(req.body.password, getPasswordByEmail(req.body.email))) {
     res.status(403);
     res.send('403: Incorrect Password'); 
@@ -285,17 +286,15 @@ app.post("/register", (req, res) => {
   //generating user id
   const id = generateRandomString();
 
-  //hashing password:
-  const password = req.body.password;
-  const hashedPassword = bcrypt.hashSync(password, 10);
-
+  //hashing password
+  const hashedPassword = bcrypt.hashSync(req.body.password, 10);
+  console.log(hashedPassword)
   //adding to users object 
   users[id] = {
     id: id,
     email: req.body.email,
     password: hashedPassword,
   }
-
   //add id to cookie 
   res.cookie('user_id', id)
 
