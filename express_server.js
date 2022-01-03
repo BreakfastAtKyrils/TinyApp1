@@ -225,19 +225,20 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 
 //logs in
 app.post("/login", (req, res) => {
-  console.log('POST /login')
 
+  //check email
   if (!checkEmail(req.body.email, users)){
     res.status(403);
     return res.send('403: Email not found'); 
   } 
-
+  //check password
   if (!bcrypt.compareSync(req.body.password, getPasswordByEmail(req.body.email))) {
     res.status(403);
     return res.send('403: Incorrect Password'); 
   }
 
   const id =  getIdByEmail(req.body.email, users)
+
   req.session.user_id = id;
   
   return res.redirect("/urls")
