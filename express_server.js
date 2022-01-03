@@ -1,20 +1,14 @@
 const express = require("express");
 const app = express();
-const PORT = 8080; // default port 8080
+const PORT = 8080; 
 const bodyParser = require("body-parser");
 const cookieSession = require('cookie-session')
 const bcrypt = require('bcrypt');
-//const req = require("express/lib/request");
-// const getIdByEmail = require("./helpers.js")
-// const checkEmail = require("./helpers.js")
 const { getIdByEmail, checkEmail } = require("./helpers.js")
 
 app.use(cookieSession({
   name: 'session',
-  keys: [0],
-
-  // Cookie Options
-  maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  keys: ["key1", "key2"],
 }))
 
 app.use(bodyParser.urlencoded({extended: true}));
@@ -101,7 +95,8 @@ app.get("/urls", (req, res) => {
   //add the URLs to the template vars passed to the render function
   const templateVars = { 
     urls: userDatabase,
-    user: users[req.session.user_id],
+    user: req.session.user_id,
+    email: users[req.session.user_id].email,
   };
 
   return res.render("urls_index", templateVars)
@@ -245,8 +240,7 @@ app.post("/login", (req, res) => {
 })
 
 app.post("/logout", (req, res) => {
-  //res.clearCookie('user_id')
-  //how to clear cookies with cookie-session
+  req.session.user_id = null;
   return res.redirect("/urls")
 })
 
